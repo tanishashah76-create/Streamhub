@@ -1,0 +1,43 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Django: Run Server",
+            "type": "shell",
+            "command": "python manage.py runserver",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Django: Make Migrations",
+            "type": "shell",
+            "command": "python manage.py makemigrations",
+            "problemMatcher": []
+        },
+        {
+            "label": "Django: Migrate Database",
+            "type": "shell",
+            "command": "python manage.py migrate",
+            "problemMatcher": []
+        },
+        {
+            "label": "Django: Seed Movies & Data",
+            "type": "shell",
+            "command": "python manage.py seed_movies",
+            "problemMatcher": []
+        },
+        {
+            "label": "Django: Create Superuser",
+            "type": "shell",
+            "command": "python manage.py createsuperuser",
+            "problemMatcher": []
+        }
+    ]
+}

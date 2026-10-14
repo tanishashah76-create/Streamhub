@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}All Series - StreamHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <!-- Header & Search -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold text-white mb-1"><i class="bi bi-tv text-danger me-2"></i>Web Series & TV Shows</h1>
+            <p class="text-muted mb-0">Binge-watch top trending series across all seasons</p>
+        </div>
+
+        <form method="GET" class="d-flex gap-2" style="max-width: 420px; width: 100%;">
+            {% if selected_genre %}
+                <input type="hidden" name="genre" value="{{ selected_genre }}">
+            {% endif %}
+            <div class="input-group">
+                <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search series...">
+                <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                {% if query %}
+                    <a href="{% url 'series_list' %}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Genre filter pills -->
+    <div class="d-flex gap-2 overflow-auto pb-3 mb-4">
+        <a href="{% url 'series_list' %}{% if query %}?q={{ query }}{% endif %}" class="btn btn-sm {% if not selected_genre %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+            All Genres
+        </a>
+        {% for g in genres %}
+            <a href="{% url 'series_list' %}?genre={{ g }}{% if query %}&q={{ query }}{% endif %}" class="btn btn-sm {% if selected_genre == g %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3 text-nowrap">
+                {{ g }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- Series Cards Grid -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for serie in series %}
+            <div class="col">
+                <div class="movie-card">
+                    <div class="movie-poster-container">
+                        <img src="{{ serie.get_poster_url }}" alt="{{ serie.title }}" loading="lazy">
+                        <div class="movie-card-overlay">
+                            <span class="rating-badge">★ {{ serie.rating }}</span>
+                            <span class="category-badge">{{ serie.genre }}</span>
+                        </div>
+                    </div>
+                    <div class="movie-card-body">
+                        <h3 class="movie-title text-white" title="{{ serie.title }}">{{ serie.title }}</h3>
+                        <div class="movie-meta">
+                            <span><i class="bi bi-calendar3 me-1"></i>{{ serie.release_year }}</span>
+                            <span>•</span>
+                            <span><i class="bi bi-tv me-1"></i>{{ serie.duration }}</span>
+                        </div>
+                        <p class="movie-desc">{{ serie.description }}</p>
+                        <div class="mt-auto d-flex gap-2">
+                            <a href="{% url 'movie_detail' serie.id %}" class="btn btn-sm btn-primary flex-grow-1">
+                                <i class="bi bi-play-fill"></i> Watch
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'toggle_watchlist' serie.id %}?next={{ request.get_full_path }}" class="btn btn-sm {% if serie.id in watchlist_ids %}btn-warning{% else %}btn-outline-secondary{% endif %}" title="Watchlist">
+                                    <i class="bi {% if serie.id in watchlist_ids %}bi-bookmark-check-fill{% else %}bi-bookmark-plus{% endif %}"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="glass-panel p-5 d-inline-block">
+                    <i class="bi bi-tv fs-1 text-muted"></i>
+                    <p class="mt-3 text-muted">No series found matching your query.</p>
+                    <a href="{% url 'series_list' %}" class="btn btn-outline-light me-2">Clear Filters</a>
+                    <a href="{% url 'add_movie' %}" class="btn btn-primary">Add a Series</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

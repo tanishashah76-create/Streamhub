@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Movie or Series - StreamHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="glass-panel p-4 p-md-5 text-white">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1">
+                            <i class="bi {% if is_edit %}bi-pencil-square text-info{% else %}bi-film text-primary{% endif %} me-2"></i>
+                            {% if is_edit %}Edit Movie in SQLite{% else %}Add to StreamHub (SQLite){% endif %}
+                        </h2>
+                        <p class="text-muted small mb-0">
+                            {% if is_edit %}Modify details for "{{ movie.title }}" and update the SQLite record.{% else %}Publish a new movie or web series to the SQLite database.{% endif %}
+                        </p>
+                    </div>
+                    <a href="{% if is_edit %}{% url 'movie_detail' movie.id %}{% else %}{% url 'home' %}{% endif %}" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-arrow-left me-1"></i> Back
+                    </a>
+                </div>
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Category *</label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger small mt-1">{{ form.category.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Genre *</label>
+                            {{ form.genre }}
+                            {% if form.genre.errors %}
+                                <div class="text-danger small mt-1">{{ form.genre.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Release Year</label>
+                            {{ form.release_year }}
+                            {% if form.release_year.errors %}
+                                <div class="text-danger small mt-1">{{ form.release_year.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Rating (0 - 10)</label>
+                            {{ form.rating }}
+                            {% if form.rating.errors %}
+                                <div class="text-danger small mt-1">{{ form.rating.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Duration / Seasons</label>
+                            {{ form.duration }}
+                            {% if form.duration.errors %}
+                                <div class="text-danger small mt-1">{{ form.duration.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Synopsis / Storyline *</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Poster Image URL</label>
+                            {{ form.poster_url }}
+                            <div class="form-text text-muted small">Provide a direct image URL (JPEG/PNG) or leave empty for default backdrop.</div>
+                            {% if form.poster_url.errors %}
+                                <div class="text-danger small mt-1">{{ form.poster_url.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Trailer or Video URL</label>
+                            {{ form.video_url }}
+                            <div class="form-text text-muted small">Optional: e.g. YouTube embed link (https://www.youtube.com/embed/...)</div>
+                            {% if form.video_url.errors %}
+                                <div class="text-danger small mt-1">{{ form.video_url.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check form-switch mt-2">
+                                {{ form.is_featured }}
+                                <label class="form-check-label ms-2" for="{{ form.is_featured.id_for_label }}">
+                                    Highlight as Featured Content on Home Page
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mt-4 d-flex gap-3">
+                            <button type="submit" class="btn {% if is_edit %}btn-info{% else %}btn-primary{% endif %} px-4 py-2 fw-semibold">
+                                <i class="bi {% if is_edit %}bi-check-circle{% else %}bi-cloud-arrow-up{% endif %} me-1"></i>
+                                {% if is_edit %}Save Changes in SQLite{% else %}Save and Publish{% endif %}
+                            </button>
+                            <a href="{% if is_edit %}{% url 'movie_detail' movie.id %}{% else %}{% url 'home' %}{% endif %}" class="btn btn-outline-secondary px-4 py-2">
+                                Cancel
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
